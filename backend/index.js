@@ -5,30 +5,29 @@ const cors = require('cors');
 const app = express();
 const Note = require('./models/note');
 
+const requestLogger = (request, response, next) => {
+	console.log('Method:', request.method);
+	console.log('Path:  ', request.path);
+	console.log('Body:  ', request.body);
+	console.log('---');
+	next();
+};
+
+const errorHandler = (error, req, res, next) => {
+	console.log(error.message);
+
+	if (error.name === 'CastError') {
+		return response.status(400).send({ error: 'malformatted id' });
+	}
+
+	next(error);
+};
+
 app.use(express.json());
 app.use(express.static('build'));
 app.use(cors());
-
-let notes = [
-	{
-		id: 1,
-		content: 'HTML is easy',
-		date: '2022-05-30T17:30:31.098Z',
-		important: true,
-	},
-	{
-		id: 2,
-		content: 'Browser can execute only Javascript',
-		date: '2022-05-30T18:39:34.091Z',
-		important: false,
-	},
-	{
-		id: 3,
-		content: 'GET and POST are the most important methods of HTTP protocol',
-		date: '2022-05-30T19:20:14.298Z',
-		important: true,
-	},
-];
+app.use(requestLogger);
+app.use(errorHandler);
 
 app.get('/', (req, res) => {
 	res.send(`<h1>Hello World!</h1>`);
@@ -57,26 +56,42 @@ app.post('/api/notes', (req, res) => {
 });
 
 app.get('/api/notes/:id', (req, res) => {
-	Note.findById(req.params.id).then((note) => res.json(note));
+	Note.findById(req.params.id)
+		.then((note) => {
+			if (note) {
+				res.json(note);
+			} else {
+				res.status(404).end();
+			}
+		})
+		.catch((error) => {
+			console.log(error);
+			res.status(400).send({ error: 'malformated data' });
+		});
 });
 
-app.delete('/api/notes/:id', (req, res) => {
-	const id = Number(req.params.id);
-	notes = notes.filter((note) => note.id !== id);
+app.delete('/api/notes/:id', (req, res, next) => {
+	Note.findByIdAndRemove(req.params.id)
+		.then((result) => res.status(204).end())
+		.catch((error) => next(error));
+});
 
-	res.status(204).end();
+app.put('/api/notes/:id', (request, response, next) => {
+	const body = request.body;
+
+	const note = {
+		content: body.content,
+		important: body.important,
+	};
+
+	Note.findByIdAndUpdate(request.params.id, note, { new: true })
+		.then((updatedNote) => {
+			response.json(updatedNote);
+		})
+		.catch((error) => next(error));
 });
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
 	console.log(`Server running on port ${PORT}`);
 });
-
-// const app = http.createServer((req, res) => {
-// 	res.writeHead(200, { 'Content-Type': 'application/json' });
-// 	res.end(JSON.stringify(notes));
-// });
-
-// const PORT = 3001;
-// app.listen(PORT);
-// console.log(`Server running on port ${PORT}`);
