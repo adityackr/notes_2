@@ -27,10 +27,16 @@ const App = () => {
 			important: Math.random() > 0.5,
 		};
 
-		noteService.create(noteObject).then((returnedNote) => {
-			setNotes([...notes, returnedNote]);
-			setNewNote('');
-		});
+		noteService
+			.create(noteObject)
+			.then((returnedNote) => {
+				setNotes([...notes, returnedNote]);
+				setNewNote('');
+			})
+			.catch((error) => {
+				setErrorMessage(error.response.data.error);
+				setTimeout(() => setErrorMessage(null), 5000);
+			});
 	};
 
 	const handleNoteChange = (e) => {

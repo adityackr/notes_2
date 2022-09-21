@@ -6,7 +6,8 @@
 	"scripts": {
 		"start": "node index.js",
 		"dev": "nodemon index.js",
-		"build:ui": "rm -rf build && cd ../frontend && yarn run build && cp -r build ../backend"
+		"build:ui": "rm -rf build && cd ../frontend && yarn run build && cp -r build ../backend",
+		"lint": "eslint ."
 	},
 	"dependencies": {
 		"cors": "^2.8.5",
@@ -15,6 +16,7 @@
 		"mongoose": "^6.6.1"
 	},
 	"devDependencies": {
+		"eslint": "^8.23.1",
 		"nodemon": "^2.0.19"
 	}
 }

@@ -1,9 +1,11 @@
 const mongoose = require('mongoose');
 
+// eslint-disable-next-line no-undef
 const uri = process.env.MONGODB_URI;
 
 mongoose
 	.connect(uri)
+	// eslint-disable-next-line no-unused-vars
 	.then((result) => {
 		console.log('Connecting to MongoDB');
 	})
@@ -12,8 +14,15 @@ mongoose
 	});
 
 const notesSchema = new mongoose.Schema({
-	content: String,
-	date: Date,
+	content: {
+		type: String,
+		minLength: 5,
+		required: true,
+	},
+	date: {
+		type: Date,
+		required: true,
+	},
 	important: Boolean,
 });
 
