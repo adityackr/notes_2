@@ -6,11 +6,12 @@ const notesSchema = new mongoose.Schema({
 		minLength: 5,
 		required: true,
 	},
-	date: {
-		type: Date,
-		required: true,
-	},
+	date: Date,
 	important: Boolean,
+	user: {
+		type: mongoose.Schema.Types.ObjectId,
+		ref: 'User',
+	},
 });
 
 notesSchema.set('toJSON', {
