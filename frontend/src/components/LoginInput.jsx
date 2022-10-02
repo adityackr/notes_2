@@ -1,8 +1,14 @@
-const LoginInput = ({ label, type, value, name, onChange }) => {
+const LoginInput = ({ label, type, value, name, id, onChange }) => {
 	return (
 		<div>
 			{label}
-			<input type={type} value={value} name={name} onChange={onChange} />
+			<input
+				id={id}
+				type={type}
+				value={value}
+				name={name}
+				onChange={onChange}
+			/>
 		</div>
 	);
 };
