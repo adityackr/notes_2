@@ -5,14 +5,15 @@ import Note from './Note';
 
 const Notes = () => {
 	const dispatch = useDispatch();
-	const notes = useSelector((state) => {
-		if (state.filter === 'ALL') {
-			return state.notes;
+	const notes = useSelector(({ filter, notes }) => {
+		if (filter === 'ALL') {
+			console.log(notes);
+			return notes;
 		}
 
-		return state.filter === 'IMPORTANT'
-			? state.notes.filter((note) => note.important)
-			: state.notes.filter((note) => !note.important);
+		return filter === 'IMPORTANT'
+			? notes.filter((note) => note.important)
+			: notes.filter((note) => !note.important);
 	});
 	return (
 		<div>
