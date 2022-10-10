@@ -157,8 +157,7 @@ import { useDispatch } from 'react-redux';
 import NewNote from './components/NewNote';
 import Notes from './components/Notes';
 import VisibilityFilter from './components/VisibilityFilter';
-import { setNotes } from './reducers/noteReducer';
-import noteService from './services/notes';
+import { initializeNotes } from './reducers/noteReducer';
 
 // const store = createStore(noteReducer);
 
@@ -182,11 +181,15 @@ import noteService from './services/notes';
 
 const App = () => {
 	const dispatch = useDispatch();
-	useEffect(() => {
-		noteService.getAll().then((notes) => {
-			notes.forEach((note) => dispatch(setNotes(note)));
-		});
-	}, [dispatch]);
+	useEffect(
+		() => {
+			dispatch(initializeNotes());
+		},
+		// noteService.getAll().then((notes) => {
+		// 	notes.forEach((note) => dispatch(setNotes(note)));
+		// }),
+		[dispatch]
+	);
 	return (
 		<div>
 			<NewNote />

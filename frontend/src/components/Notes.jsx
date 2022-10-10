@@ -7,7 +7,6 @@ const Notes = () => {
 	const dispatch = useDispatch();
 	const notes = useSelector(({ filter, notes }) => {
 		if (filter === 'ALL') {
-			console.log(notes);
 			return notes;
 		}
 
